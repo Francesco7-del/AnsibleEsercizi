@@ -1,6 +1,7 @@
 - name: Setup FE&BE
   hosts: fe #host_locale 
   connection: local
+  
   roles:
     - ../Esercizio1/roles/fe 
     - ../Esercizio1/roles/be  
@@ -25,15 +26,7 @@
         dest: /tmp/benvenuto.txt    #genera il file con il conteuto del template 
 
 
-    - name: group1.yml in ese2
-      include_vars:
-        file: Esercizio2/gruop_vars/group1.yml
-
-    - name: stampa valore variabile in ese2
-      debug:
-        var: group_var1
-      tags: ese2
-
+    
 ################
 # - name: Setup BE
 #   hosts: be

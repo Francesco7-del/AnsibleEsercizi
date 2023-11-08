@@ -1,0 +1,8 @@
+- name: test 
+  hosts: fe
+  connection: local
+  tasks:
+    - name: test var fe 
+      debug:
+        var: fe_vars
+      tags: ese2
