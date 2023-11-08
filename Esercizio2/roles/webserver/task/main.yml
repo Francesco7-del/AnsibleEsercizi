@@ -1,0 +1,7 @@
+
+- name: group1.yml
+  include_vars:
+    file: Esercizio2/groups_vars/group1.yml
+- name: stampa valore variabile
+  debug:
+    var: group_var1
