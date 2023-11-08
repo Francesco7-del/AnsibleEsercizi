@@ -1,0 +1,105 @@
+- name: Setup FE&BE
+  hosts: fe #host_locale 
+  connection: local
+  roles:
+    - Esercizio1/roles/fe 
+    - Esercizio1/roles/be  
+  vars:
+      nome: "xxxxxxxxxxx"  #vars per l'esempio template 
+  tasks:
+    # Esempio block rescue always
+    - block:
+        - include_tasks: Esercizio1/roles/fe/tasks/block-esempio.yml          
+      always:
+        - debug:
+            msg: "Eseguito sempre, indipendentemente dal risultato delle task"
+      rescue:
+        - debug:
+            msg: "Eseguito solo se una delle task nel blocco ha fallito" 
+
+
+    - name: Genera un messaggio di benvenuto
+      template:
+        src: Esercizio1/roles/common/templates/hello.j2
+        dest: /tmp/benvenuto.txt    #genera il file con il conteuto del template 
+
+
+
+
+################
+# - name: Setup BE
+#   hosts: be
+#   connection: local
+#   roles:
+#     - Esercizio1/roles/be
+#########
+# - name: Gestione file e utenti su host FE
+#   hosts: host_locale
+#   connection: local
+#   roles:
+#     - common
+#   #creazione file 
+#   vars_prompt:
+#     - name: "overwrite"
+#       prompt: "Il file 'ciao' esiste già. Vuoi sovrascriverlo? (s/n)"
+#       private: false
+#   tasks:
+#     - name: Verifica se il file 'ciao' esiste
+#       stat:
+#         path: "roles/common/files/ciao"
+#       register: result
+
+#     - name: Crea il file 'ciao' con il contenuto 'ciao ciao' se falsen esiste e se l'utente ha scelto di sovrascriverlo
+#       copy:
+#         content: "ciao ciao/n"
+#         dest: "roles/common/files/ciao"
+#       when:
+#         - result.stat.exists == False
+#         - overwrite == 's'
+#       tags:
+#         - file
+
+#     - name: falsetifica l'utente se il file 'ciao' è stato creato o sovrascritto
+#       debug:
+#         msg: "Il file 'ciao' è stato {{ 'sovrascritto' if result.stat.exists else 'creato' }}."
+#       when: overwrite == 's'
+#       tags:
+#         - file
+
+#     - name: Nessuna modifica necessaria
+#       debug:
+#       when: overwrite == 'n'
+#       tags:
+#         - file
+
+
+#Sol es1 
+# - name: Raccogli informazioni sul sistema
+#   hosts: fe
+#   connection: local
+#  
+
+#   tasks:
+#     - name: Raccogli informazioni sul sistema operativo
+#       setup:
+#         filter: ansible_distribution*
+#       register: os_info
+
+#     - name: Raccogli informazioni sul pacchetto Docker
+#       package_facts:
+#         manager: auto
+#       register: package_info
+
+#     - name: Stampa le informazioni sul sistema operativo
+#       debug:
+#         msg:
+#           - "Versione Sistema Operativo: {{ os_info.ansible_facts.ansible_distribution }}"
+#           - "Distribuzione: {{ os_info.ansible_facts.ansible_distribution_version }}"
+
+#     - name: Stampa la versione del pacchetto Docker
+#       debug:
+#         msg: "Versione del pacchetto Docker: {{ package_info.ansible_facts.packages['docker'][0].version if 'docker' in package_info.ansible_facts.packages else 'Docker non installato' }}"
+
+#     - name: Stampa la versione del pacchetto Tar
+#       debug:
+#         msg: "Versione del pacchetto Tar: {{ package_info.ansible_facts.packages['tar'][0].version if 'tar' in package_info.ansible_facts.packages else 'Tar non installato' }}"
