@@ -1,0 +1,58 @@
+#somma pori 
+- name: Creazione della lista
+  set_fact:
+    my_list: "1,2,3,4,5"
+
+- name: Stampa una stringa in maiuscolo
+  debug:
+    msg: "{{ 'hello' | upper }}"
+
+- name: Creazione della lista
+  set_fact:
+    my_list: "{{ my_list.split(',') | map('int') | list }}"
+
+- name: Visualizza i valori della lista
+  debug:
+    var: my_list
+
+- name: Stampa gli elementi pari di una lista
+  debug:
+    msg: "{{ my_list | select('even') | list }}"
+  register: somma_result
+
+- name: Calcola una somma
+  set_fact:
+    somma: "{{ somma_result.msg | sum }}"
+  notify: Notifica somma calcolata
+
+- name: Importa handlers
+  import_tasks: roles/fe/handlers/handlers.yml
+  
+
+
+ #esempio lista python
+- name: Esegui un comando sugli host
+  command: echo "!!!!!!!!"
+  delegate_to: fe
+  with_items: "{{ groups['fe'] }}"
+#esempio dizionario
+- name: Esegui una task con parametri
+  debug:
+    msg: "Il nome dell'applicazione è {{ app_config.name }}, la versione è {{ app_config.version }} e la porta è {{ app_config.port }}"
+  vars:
+    app_config:
+      name: MyApp
+      version: 1.0
+      port: 8080
+#esempio loop 
+- name: Creazione di utenti
+  user:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - user@eeee
+    - user2@root
+    - user3@adm
+  tags:
+    - users
+ 

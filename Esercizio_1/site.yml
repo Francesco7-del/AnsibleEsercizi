@@ -1,0 +1,28 @@
+- name: Setup FE&BE
+  hosts: fe #host_locale 
+  connection: local
+  
+  roles:
+    - roles/fe 
+    - roles/be  
+    
+  vars:
+      nome: "xxxxxxxxxxx"  #vars per l'esempio template 
+  tasks:
+    # Esempio block rescue always
+    - block:
+        - include_tasks: roles/fe/tasks/block-esempio.yml          
+      always:
+        - debug:
+            msg: "Eseguito sempre, indipendentemente dal risultato delle task"
+      rescue:
+        - debug:
+            msg: "Eseguito solo se una delle task nel blocco ha fallito" 
+
+
+    - name: Genera un messaggio di benvenuto
+      template:
+        src: roles/common/templates/hello.j2
+        dest: /tmp/benvenuto.txt    #genera il file con il conteuto del template 
+
+    

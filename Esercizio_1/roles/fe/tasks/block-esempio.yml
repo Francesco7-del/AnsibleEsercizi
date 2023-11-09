@@ -1,0 +1,16 @@
+- name: Task 1
+  debug:
+    msg: "Eseguendo la Task 1"
+
+- name: Task 2 (con errore)
+  command: /nonesiste/ #genera l'errore
+  register: result
+  ignore_errors: true #procede con l'esecuzione del play
+
+- name: Task 3
+  debug:
+    msg: "Eseguendo la Task 3"
+
+- name: Task di cleanup
+  debug:
+    msg: "Eseguendo il cleanup"

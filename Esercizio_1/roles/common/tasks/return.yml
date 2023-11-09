@@ -1,0 +1,15 @@
+- name: Esempio di task con valore di ritorno
+  set_fact:
+    my_variable: " valore di RETURN "
+- debug:
+    msg: "{{ my_variable }}."
+
+ #esempio look up --mpstra  il contenutoi del file ciao 
+- name: Leggi il file Ciao
+  ansible.builtin.debug:
+    msg: "{{ lookup('file', 'roles/common/files/ciao') }}"
+
+
+- name: stampa valore variabile
+  debug:
+    var: group_var1

@@ -1,0 +1,22 @@
+- name: Check if MySQL is installed
+  shell: mysql --version
+  register: mysql_installed
+  ignore_errors: true
+
+- name: Install MySQL
+  apt:
+    name: mysql-server
+    state: present
+  when: mysql_installed.rc != 0
+  notify: 
+    - Start MySQL
+
+- name: Notify completion
+  debug:
+    msg: "MySQL installation completed on BE"
+  when: mysql_installed.rc != 0
+
+- name: Notify MySQL already installed
+  debug:
+    msg: "MySQL is already installed on BE"
+  when: mysql_installed.rc == 0

@@ -1,0 +1,4 @@
+#handlers
+- name: Notifica somma calcolata
+  debug:
+    msg: "La somma dei numeri pari della lista è : {{ somma }}"

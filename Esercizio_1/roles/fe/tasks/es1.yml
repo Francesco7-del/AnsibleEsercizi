@@ -1,0 +1,71 @@
+
+ #SOL1
+  # - name: Stampa la versione del sistema operativo
+  #   debug:
+  #     msg: "Versione Sistema Operativo: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+  # - name: Controlla se Docker è installato
+  #   shell: docker --version || echo "Docker non è installato"
+  #   register: docker_version
+  #   ignore_errors: true
+
+  # - name: Stampa la versione di Docker
+  #   debug:
+  #     msg: "{{ docker_version.stdout }}"
+
+  # - name: Controlla se Tar è installato
+  #   shell: tar --version | head -n 1 || echo "Tar non è installato"
+  #   register: tar_version
+  #   ignore_errors: true
+
+  # - name: Stampa la versione di Tar
+  #   debug:
+  #     msg: "{{ tar_version.stdout }}"
+
+# - name: Raccogli informazioni sul sistema operativo
+#   setup:
+#     filter: ansible_distribution*
+#   register: os_info
+
+# - name: Raccogli informazioni sul pacchetto Docker
+#   package_facts:
+#     manager: auto
+#   register: package_info
+
+# - name: Creazione della lista dei risultati
+#   set_fact:
+#     results_list: []
+
+# - name: Aggiungi informazioni sul sistema operativo alla lista
+#   set_fact:
+#     results_list: "{{ results_list + ['Versione Sistema Operativo: ' + os_info.ansible_facts.ansible_distribution, 'Distribuzione: ' + os_info.ansible_facts.ansible_distribution_version] }}"
+
+# - name: Aggiungi informazioni sulla versione del pacchetto Docker alla lista
+#   set_fact:
+#     results_list: "{{ results_list + ['Versione del pacchetto Docker: ' + (package_info.ansible_facts.packages['docker'][0].version if 'docker' in ansible_facts.packages else 'Docker non installato')] }}"
+
+# - name: Aggiungi informazioni sulla versione del pacchetto Tar alla lista
+#   set_fact:
+#     results_list: "{{ results_list + ['Versione del pacchetto Tar: ' + (package_info.ansible_facts.packages['tar'][0].version if 'tar' in package_info.ansible_facts.packages else 'Tar non installato')] }}"
+
+# - name: Stampa la lista dei risultati
+#   debug:
+#     var: results_list
+
+# - name: Stampa package facts
+#   debug:
+#     var: ansible_facts.packages
+
+
+
+#sol2 es1
+- name: Raccolta dati 
+  setup:
+    filter: ansible_distribution, ansible_distribution_version, ansible_packages
+
+- name: Stampa dati richiesti 
+  debug:
+    msg: |
+      OS Version: {{ ansible_distribution }} {{ ansible_distribution_version }}
+      Docker Version: {{ ansible_packages['docker-ce']['version'] | default('Non installato') }}
+      Tar Version: {{ ansible_packages['tar']['version'] | default('Non installato') }}

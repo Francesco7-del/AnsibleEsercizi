@@ -1,0 +1,40 @@
+- name: Check if Nginx is installed
+  command: nginx -v
+  register: nginx_installed
+  
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+  when: nginx_installed.rc != 0
+  notify: 
+    - Start Nginx
+
+- name: Notify cmpletamento
+  debug:
+    msg: "Nginx instalazzione completa"
+  when: nginx_installed.rc != 0
+
+- name: Notify Nginx già installato 
+  debug:
+    msg: "nginx già installato"
+  when: nginx_installed.rc == 0
+
+- name: Include variables from vars folder
+  include_vars:
+    file: roles/common/vars/vars.yml
+- name: stampa valore variabile
+  debug:
+    var: vars_ciao   #utlilizzo variabile in altro file 
+
+#esempio filtri 
+
+- name: Esegui una task con parametri
+  debug:
+    msg: "Il nome dell'applicazione è {{ app_config.name }}, la versione è {{ app_config.version }} e la porta è {{ app_config.port }}"
+  vars:
+    app_config:
+      name: MyApp
+      version: 1.0
+      port: 8080

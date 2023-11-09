@@ -9,7 +9,7 @@
       tags: ese2
                       
     - name: Controlla e ferma i servizi se attivi
-      ansible.builtin.systemd_service:  ##cambiare lo stato di ciascun servizio nella lista a stopped.
+      systemd_service:  ##cambiare lo stato di ciascun servizio nella lista a stopped.
         name: "{{ item }}"
         state: stopped
       register: service_status  ##risultato  operazioni

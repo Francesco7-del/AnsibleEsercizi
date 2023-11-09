@@ -1,0 +1,6 @@
+
+    
+- name: Importa le task da return.yml
+  include_tasks: roles/common/tasks/return.yml
+
+  

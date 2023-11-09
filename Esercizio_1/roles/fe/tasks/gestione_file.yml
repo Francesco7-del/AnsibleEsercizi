@@ -1,0 +1,20 @@
+
+- name: Verifica se il file 'ciao' esiste
+  stat:
+    path: "roles/common/files/ciao"
+  register: result
+
+- name: Crea il file 'ciao' con il contenuto 'ciao ciao' se non esiste
+  copy:
+    content: "ciao ciao3/n"
+    dest: "roles/common/files/ciao_test"
+  when: result.stat.exists == False
+  tags:
+    - file
+
+- name: Notifica l'utente se il file 'ciao' è stato creato
+  debug:
+    msg: "Il file 'ciao' è stato creato."
+  when: result.stat.exists == False
+  tags:
+    - file
