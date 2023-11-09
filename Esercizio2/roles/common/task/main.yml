@@ -1,0 +1,3 @@
+- name: Stampa un messaggio
+  debug:
+    msg: "Questo è un messaggio di stampa dal ruolo common"
