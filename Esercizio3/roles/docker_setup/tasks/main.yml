@@ -1,0 +1,41 @@
+
+- name: Installa pacchetti necessari
+  apt: 
+    pkg: 
+      - apt-transport-https 
+      - ca-certificates
+      - curl 
+      - software-properties-common
+      - python3-pip
+    update_cache: true
+#key per verificare l'autenticità dei pacchetti scaricati dal repository.
+- name: Add Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+    
+- name: Aggiunta docker repo 
+  apt_repository:  
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+#installa docker
+- name: Install Docker
+  apt:
+    pkg: docker-ce
+    update_cache: yes
+
+- name: Verifica e mostra l'installazione di Docker
+  command: docker --version
+  register: docker_version_output
+  ignore_errors: true
+
+- name: Stampa il risultato della verifica dell'installazione di Docker
+  block:
+    - name: Corretta installazione
+      ansible.builtin.debug:
+        msg: "Docker è installato correttamente. Versione: {{ docker_version_output.stdout }}"
+      when: "'Docker version' in docker_version_output.stdout"
+
+    - name: Installazione Docker non corretta
+      ansible.builtin.fail:
+        msg: "Docker non è installato correttamente."
+      when: "'Docker version' not in docker_version_output.stdout"

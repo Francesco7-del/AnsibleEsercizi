@@ -1,34 +1,44 @@
-- name: test 
+- name: Check servizi e arresto 
   hosts: fe
   connection: local
   tasks:
-  #stampa var test
-    - name: test var fe 
-      debug:
-        var: fe_vars
-      tags: ese2
-                      
-    - name: Controlla e ferma i servizi se attivi
-      systemd_service:  ##cambiare lo stato di ciascun servizio nella lista a stopped.
+ 
+#     - name: Controlla e ferma i servizi se attivi
+#       systemd_service:  ##cambiare lo stato di ciascun servizio nella lista a stopped.
+#         name: "{{ item }}"
+#         state: stopped
+#       register: service_status  ##risultato  operazioni
+#       loop:
+#         - docker
+#         - httpd
+#         - pippod
+#       ignore_errors: true
+  
+# ##tasks stampa 
+#     - name: Stampa questo  messaggio se il servizio  è in esecuzione
+#       debug:
+#         msg: "{{ item.item }} è stato fermato"
+#       when: item.changed
+#       loop: "{{ service_status.results }}"
+     
+#     - name: Stampa questo messaggio se il servizio non è in esecuzione
+#       debug:
+#         msg: "{{ item.item }} non è in esecuzione o non esiste "
+#       when: not item.changed
+#       loop: "{{ service_status.results }}"
+
+    - name: Controlla e ferma i servizi se attivi    
+      systemd_service:
         name: "{{ item }}"
         state: stopped
-      register: service_status  ##risultato  operazioni
       loop:
         - docker
         - httpd
-        - pippod
+        - pippod  
       ignore_errors: true
-  
-##tasks stampa 
-    - name: Stampa questo  messaggio se il servizio  è in esecuzione
-      debug:
-        msg: "{{ item.item }} è stato fermato"
-      when: item.changed
-      loop: "{{ service_status.results }}"
-     
-    - name: Stampa questo messaggio se il servizio non è in esecuzione
-      debug:
-        msg: "{{ item.item }} non è in esecuzione o non esiste "
-      when: not item.changed
-      loop: "{{ service_status.results }}"
+      register: service_status
 
+    - name: Stampa messaggio  
+      ansible.builtin.debug:  
+        msg: "{{ item.item }} : {{ 'fermato' if item.changed else 'non presente/ non in esecuzione' }}"
+      loop: "{{ service_status.results }}"

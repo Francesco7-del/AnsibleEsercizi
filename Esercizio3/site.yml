@@ -1,0 +1,10 @@
+- name: Installazione docker
+  hosts: fe
+  connection: local
+  become: true
+  tasks:
+    
+    - name: includi role per installazione
+      include_role: 
+        name: docker_setup
+      

@@ -1,0 +1,8 @@
+- name: Stampa un messaggio
+  debug:
+    msg: "Questo è un messaggio di stampa dal ruolo common"
+ #stampa var test
+- name: test var fe 
+  debug:
+    var: fe_vars
+  tags: ese2
