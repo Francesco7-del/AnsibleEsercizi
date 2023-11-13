@@ -4,7 +4,11 @@
   become: true
   tasks:
     
-    - name: includi role per installazione
+    - name: includi role per installazione di docker
       include_role: 
-        name: docker_setup
+        name: docker_install
       
+    # - name: restart docker service   handlress
+    #   notify: restart docker
+
+

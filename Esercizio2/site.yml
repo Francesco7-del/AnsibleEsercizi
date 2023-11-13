@@ -42,3 +42,8 @@
       ansible.builtin.debug:  
         msg: "{{ item.item }} : {{ 'fermato' if item.changed else 'non presente/ non in esecuzione' }}"
       loop: "{{ service_status.results }}"
+
+#esempio inclusione roles
+    - name: test
+      include_role: 
+        name: common

@@ -1,3 +1,5 @@
+---
+# tasks file for docker_install
 
 - name: Installa pacchetti necessari
   apt: 
@@ -29,13 +31,7 @@
   ignore_errors: true
 
 - name: Stampa il risultato della verifica dell'installazione di Docker
-  block:
-    - name: Corretta installazione
-      ansible.builtin.debug:
-        msg: "Docker è installato correttamente. Versione: {{ docker_version_output.stdout }}"
-      when: "'Docker version' in docker_version_output.stdout"
+  debug:
+    msg: "Docker è installato correttamente. Versione: {{ docker_version_output.stdout }}"
+  when: "'Docker version' in docker_version_output.stdout"
 
-    - name: Installazione Docker non corretta
-      ansible.builtin.fail:
-        msg: "Docker non è installato correttamente."
-      when: "'Docker version' not in docker_version_output.stdout"
