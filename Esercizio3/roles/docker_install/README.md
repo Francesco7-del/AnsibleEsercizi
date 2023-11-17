@@ -1,22 +1,31 @@
-Role Name
-=========
+# Ruolo Ansible per installazione Docker
 
-A brief description of the role goes here.
+Questo ruolo Ansible esegue l'installazione o la rimozione di Docker a seconda se sia già presente o meno.
 
-Requirements
-------------
+## Requisiti
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Accesso root alla macchina target
+- python e ansible installati sulla macchina di controllo
 
-Role Variables
---------------
+## Variabili
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Questo ruolo utilizza le seguenti variabili:
 
-Dependencies
-------------
+- `docker_package`: nome del pacchetto Docker da installare (default: `docker-ce`)
+- `docker_service`: nome del servizio systemd per Docker (default: `docker`)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Come funziona
+
+Il ruolo esegue i seguenti passi:
+
+1. Raccoglie i facts sui pacchetti installati
+2. Verifica se Docker è installato controllando la presenza del pacchetto
+3. Se Docker è installato, arresta e disinstalla il servizio e il pacchetto
+4. Se Docker non è installato, installa il pacchetto docker-ce
+5. Avvia il servizio docker dopo l'installazione
+6. Stampa lo stato corrente dell'installazione di Docker
+
+In questo modo il ruolo gestisce in modo idempotente l'installazione o la rimozione di Docker a seconda dello stato corrente del sistema.
 
 Example Playbook
 ----------------

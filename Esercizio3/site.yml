@@ -2,12 +2,14 @@
   hosts: fe
   connection: local
   become: true
+  become_user: root
+  gather_facts: true
   tasks:
     
     - name: includi role per installazione di docker
       include_role: 
         name: docker_install
-      
+       # docker_version: "24.0.6"
     # - name: restart docker service   handlress
     #   notify: restart docker
 

@@ -1,7 +1,4 @@
 ---
 # vars file for docker_install
-var_stampa: 'xxxxxxx'
 
-config: 
-    K1: VAL1
-    K2: VAL2
+docker_package: docker-ce

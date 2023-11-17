@@ -1,37 +1,55 @@
 ---
 # tasks file for docker_install
 
-- name: Installa pacchetti necessari
-  apt: 
-    pkg: 
-      - apt-transport-https 
-      - ca-certificates
-      - curl 
-      - software-properties-common
-      - python3-pip
-    update_cache: true
-#key per verificare l'autenticità dei pacchetti scaricati dal repository.
-- name: Add Docker GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-    
-- name: Aggiunta docker repo 
-  apt_repository:  
-    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-#installa docker
+# - name: Controlla se Docker è già installato
+#   package:
+#     name: "{{ docker_package }}"
+#     state: present
+#   register: docker_installed
+
+# - name: Disinstalla Docker se presente
+#   package:
+#     name: "{{ docker_package }}"
+#     state: absent
+#   when: docker_installed is changed
+
+# - name: Installa Docker
+#   package:
+#     name: "{{ docker_package }}"
+#     state: present
+
+
+- name: Gather facts about installed packages
+  package_facts:
+
+- name: Check if Docker is installed
+  set_fact:
+    docker_installed: "{{ 'docker-ce' in ansible_facts.packages | default([]) }}"
+
+- name: Stop Docker service
+  systemd:
+    name: "{{ docker_service }}"
+    state: stopped
+  when: docker_installed
+
+- name: Uninstall Docker
+  package:
+    name: "{{ docker_package }}"
+    state: absent
+  when: docker_installed
+
 - name: Install Docker
-  apt:
-    pkg: docker-ce
-    update_cache: yes
+  package:
+    name: "{{ docker_package }}"
+    state: present
+  when: not docker_installed
 
-- name: Verifica e mostra l'installazione di Docker
-  command: docker --version
-  register: docker_version_output
-  ignore_errors: true
+- name: Start Docker service
+  systemd:
+    name: "{{ docker_service }}"
+    state: started
+  when: not docker_installed
 
-- name: Stampa il risultato della verifica dell'installazione di Docker
+- name: Print Docker install status  
   debug:
-    msg: "Docker è installato correttamente. Versione: {{ docker_version_output.stdout }}"
-  when: "'Docker version' in docker_version_output.stdout"
-
+    msg: "Docker is installed: {{ docker_installed }}"
