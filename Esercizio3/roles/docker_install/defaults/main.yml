@@ -4,3 +4,7 @@ docker_version: latest
 docker_service: docker
 docker_package: docker-ce
 docker_action: "install"
+docker_packages:
+  - docker-ce 
+  - docker-ce-cli
+  - containerd.io

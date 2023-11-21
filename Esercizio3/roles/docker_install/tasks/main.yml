@@ -1,55 +1,78 @@
 ---
 # tasks file for docker_install
 
-# - name: Controlla se Docker è già installato
-#   package:
-#     name: "{{ docker_package }}"
-#     state: present
-#   register: docker_installed
 
-# - name: Disinstalla Docker se presente
+
+# - name: Gather facts about installed packages
+#   package_facts:
+
+# - name: Check if Docker is installed
+#   set_fact:
+#     docker_installed: "{{ 'docker-ce' in ansible_facts.packages }}"
+
+# - name: Stop Docker service
+#   systemd:
+#     name: "{{ docker_service }}"
+#     state: stopped
+#   when: docker_installed
+
+# - name: Uninstall Docker
 #   package:
 #     name: "{{ docker_package }}"
 #     state: absent
-#   when: docker_installed is changed
+#   when: docker_installed
 
-# - name: Installa Docker
+# - name: Install Docker
 #   package:
 #     name: "{{ docker_package }}"
 #     state: present
+#   when: not docker_installed
+
+# - name: Start Docker service
+#   systemd:
+#     name: "{{ docker_service }}"
+#     state: started
+#   when: not docker_installed
+
+# - name: Print Docker install status  
+#   debug:
+#     msg: "Docker is installed: {{ docker_installed }}"
 
 
-- name: Gather facts about installed packages
-  package_facts:
 
-- name: Check if Docker is installed
-  set_fact:
-    docker_installed: "{{ 'docker-ce' in ansible_facts.packages | default([]) }}"
 
-- name: Stop Docker service
-  systemd:
-    name: "{{ docker_service }}"
-    state: stopped
-  when: docker_installed
+ # Disinstalla i pacchetti docker se già presenti
+  - name: Uninstall Docker if present
+    package:
+      name: "{{ docker_packages }}"
+      state: absent
+    register: docker_removed
 
-- name: Uninstall Docker
-  package:
-    name: "{{ docker_package }}"
-    state: absent
-  when: docker_installed
+ # Debug messaggio se stato di pacchetti è cambiato
+  - name: Print message if Docker  uninstalled
+    debug:
+      msg: "Docker disinstallato"
+    when: docker_removed.changed
 
-- name: Install Docker
-  package:
-    name: "{{ docker_package }}"
-    state: present
-  when: not docker_installed
+ # Installa i pacchetti Docker specificati
+  - name: Install Docker packages
+    package:
+      name: "{{ docker_packages }}"
+        
+# Raccoglie le info su tutti i pacchetti installati
+  - name: Get package facts
+    package_facts:
+      manager: auto
+    register: pkg_facts
 
-- name: Start Docker service
-  systemd:
-    name: "{{ docker_service }}"
-    state: started
-  when: not docker_installed
-
-- name: Print Docker install status  
-  debug:
-    msg: "Docker is installed: {{ docker_installed }}"
+ # Filtra e stampa solo i pacchetti Docker
+  - name: Print Docker packages
+    debug:
+      msg: "{{ pkg_facts.ansible_facts.packages | select('match', 'docker') | list }}"
+      
+# Avvia e abilita il servizio Docker
+  - name: Start Docker service
+    service:
+      name: "{{ docker_service }}"
+      state: started
+      enabled: yes

@@ -13,19 +13,24 @@ Questo ruolo utilizza le seguenti variabili:
 
 - `docker_package`: nome del pacchetto Docker da installare (default: `docker-ce`)
 - `docker_service`: nome del servizio systemd per Docker (default: `docker`)
+-  `docker_packages`: pacchetti utilizzati per l'installazione e disinstallazione
 
 ## Come funziona
 
 Il ruolo esegue i seguenti passi:
 
-1. Raccoglie i facts sui pacchetti installati
-2. Verifica se Docker è installato controllando la presenza del pacchetto
-3. Se Docker è installato, arresta e disinstalla il servizio e il pacchetto
-4. Se Docker non è installato, installa il pacchetto docker-ce
-5. Avvia il servizio docker dopo l'installazione
-6. Stampa lo stato corrente dell'installazione di Docker
+1)Se Docker era installato e viene rimosso, il task successivo stampa un messaggio usando debug.
 
-In questo modo il ruolo gestisce in modo idempotente l'installazione o la rimozione di Docker a seconda dello stato corrente del sistema.
+2)Viene quindi installato Docker tramite il modulo package, specificando i pacchetti necessari in docker_packages.
+
+3)Dopo l'installazione, il modulo package_facts raccoglie informazioni sui pacchetti installati e i risultati vengono registrati in pkg_facts.
+
+4)Il task successivo stampa a video la lista dei pacchetti Docker installati, filtrando il risultato di pkg_facts.
+
+5)Infine il servizio Docker viene avviato e abilitato all'avvio tramite il modulo service.
+
+Il ruolo gestisce quindi il ciclo di vita completo di installazione e configurazione iniziale di Docker.
+
 
 Example Playbook
 ----------------
@@ -34,7 +39,11 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+       - role: docker_install
+
+    - name: includi role per installazione di docker
+      include_role: 
+        name: docker_install
 
 License
 -------
