@@ -1,0 +1,13 @@
+1. Raccogliere i facts del sistema e impostare le variabili
+ 
+2.disinstallare dipendenze per inistallazione pulita(per distro Redhat)
+
+
+3. Costruire la stringa del repository Docker basata sulla distribuzione
+  
+   
+3. Aggiungere il repository Docker ufficiale
+
+5.installa docker
+
+6.avvia servizio docker

@@ -1,10 +1,45 @@
 ---
 # defaults file for docker_install
-docker_version: latest
+
+
+# Servizio docker 
 docker_service: docker
-docker_package: docker-ce
-docker_action: "install"
-docker_packages:
-  - docker-ce 
+
+# Repo RH family vars
+repo_baseurl_rh_family: https://download.docker.com/linux/{{ ansible_distribution | lower }}/$releasever/$basearch/stable
+repo_name_rh_family: docker-ce-stable
+repo_file_rh_family: docker-ce
+repo_desc_rh_family: Docker CE Stable - $basearch
+repo_gpk_rh_family: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+
+# Pacchetti da rimuovere per installazione pulita
+docker_packages_dis_centos:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine
+
+# Pacchetti da installare 
+docker_packages_inst_rh:
+  - docker-ce
   - docker-ce-cli
   - containerd.io
+  - docker-compose-plugin
+  - docker-buildx-plugin
+  
+docker_allow_downgrade: true
+
+# Repo Debian family vars
+repo_baseurl_debian_family: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }}   {{ ansible_distribution_release }}  stable 
+
+# Pacchetti da installare 
+docker_packages_inst_ubuntu:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose-plugin
+  - docker-buildx-plugin

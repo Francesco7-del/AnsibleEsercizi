@@ -1,78 +1,33 @@
 ---
-# tasks file for docker_install
+# task file main
+
+# Install for RH 
+- name: install for RH
+  include_tasks: redhat_install.yml
+  when: (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] >= "38") or (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] >= "7")
+
+# Install debian 
+- name: install for debian
+  include_tasks: debian_install.yml
+  when: (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version']  >= "20")
 
 
+# Avvio svc docker
+- name: Start Docker service
+  service:
+    name: "{{ docker_service }}"
+    state: started
+  ignore_errors: true
 
-# - name: Gather facts about installed packages
-#   package_facts:
+# Debug
+- name: Get package facts for Docker-ce
+  package_facts:
+    manager: auto
+  register: pkg_facts
 
-# - name: Check if Docker is installed
-#   set_fact:
-#     docker_installed: "{{ 'docker-ce' in ansible_facts.packages }}"
-
-# - name: Stop Docker service
-#   systemd:
-#     name: "{{ docker_service }}"
-#     state: stopped
-#   when: docker_installed
-
-# - name: Uninstall Docker
-#   package:
-#     name: "{{ docker_package }}"
-#     state: absent
-#   when: docker_installed
-
-# - name: Install Docker
-#   package:
-#     name: "{{ docker_package }}"
-#     state: present
-#   when: not docker_installed
-
-# - name: Start Docker service
-#   systemd:
-#     name: "{{ docker_service }}"
-#     state: started
-#   when: not docker_installed
-
-# - name: Print Docker install status  
-#   debug:
-#     msg: "Docker is installed: {{ docker_installed }}"
-
-
-
-
- # Disinstalla i pacchetti docker se già presenti
-  - name: Uninstall Docker if present
-    package:
-      name: "{{ docker_packages }}"
-      state: absent
-    register: docker_removed
-
- # Debug messaggio se stato di pacchetti è cambiato
-  - name: Print message if Docker  uninstalled
-    debug:
-      msg: "Docker disinstallato"
-    when: docker_removed.changed
-
- # Installa i pacchetti Docker specificati
-  - name: Install Docker packages
-    package:
-      name: "{{ docker_packages }}"
-        
-# Raccoglie le info su tutti i pacchetti installati
-  - name: Get package facts
-    package_facts:
-      manager: auto
-    register: pkg_facts
-
- # Filtra e stampa solo i pacchetti Docker
-  - name: Print Docker packages
-    debug:
-      msg: "{{ pkg_facts.ansible_facts.packages | select('match', 'docker') | list }}"
-      
-# Avvia e abilita il servizio Docker
-  - name: Start Docker service
-    service:
-      name: "{{ docker_service }}"
-      state: started
-      enabled: yes
+- name: Print Docker-ce package facts
+  debug:
+    var: pkg_facts.ansible_facts.packages[item]
+  loop:
+    - 'docker-ce'
+    - "{{ pkg_facts.ansible_facts.packages.keys() | select('match', 'docker-ce-*') | list }}"

@@ -1,56 +1,44 @@
-# Ruolo Ansible per installazione Docker
+# Ruolo Ansible per l'installazione di Docker
 
-Questo ruolo Ansible esegue l'installazione o la rimozione di Docker a seconda se sia già presente o meno.
+Questo ruolo Ansible gestisce l'installazione e l'aggiornamento di Docker su una macchina target. Supporta sia le distribuzioni basate su Debian che quelle basate su RedHat(Fedora/Centos).
+
+
 
 ## Requisiti
+- Disporre dell'escalation ai privilegi di root per accedere alle macchine target 
+- Abilitare raccolta facts in Ansible (gather_facts: true)
+- Docker non è supportato dalle versioni precedenti a Centos7 e Ubuntu <20
 
-- Accesso root alla macchina target
-- python e ansible installati sulla macchina di controllo
 
 ## Variabili
+Il ruolo utilizza le seguenti variabili:
 
-Questo ruolo utilizza le seguenti variabili:
+`docker_service`: Il nome del servizio systemd per Docker (default: docker).
 
-- `docker_package`: nome del pacchetto Docker da installare (default: `docker-ce`)
-- `docker_service`: nome del servizio systemd per Docker (default: `docker`)
--  `docker_packages`: pacchetti utilizzati per l'installazione e disinstallazione
+`repo_baseurl_rh_family`, `repo_name_rh_family`, `repo_file_rh_family`, `repo_desc_rh_family`, `repo_gpk_rh_family`: Queste variabili definiscono il repository Docker ufficiale per le distribuzioni basate su RedHat.
 
-## Come funziona
+`docker_packages_dis_centos`: Una lista di vecchi pacchetti Docker da rimuovere.
 
-Il ruolo esegue i seguenti passi:
+`docker_packages_inst_rh`: Una lista di pacchetti Docker da installare su distribuzioni basate su RedHat. Se viene specificata una versione per un pacchetto (ad esempio, docker-ce-24.0.6), verrà installata quella versione. Altrimenti, verrà installata l’ultima versione disponibile.
 
-1)Se Docker era installato e viene rimosso, il task successivo stampa un messaggio usando debug.
+`docker_allow_downgrade`: Un flag booleano che, se impostato a true, permette il downgrade dei pacchetti durante l’installazione.
 
-2)Viene quindi installato Docker tramite il modulo package, specificando i pacchetti necessari in docker_packages.
+`repo_baseurl_debian_family`: Questa variabile definisce il repository Docker ufficiale per le distribuzioni basate su Debian.
 
-3)Dopo l'installazione, il modulo package_facts raccoglie informazioni sui pacchetti installati e i risultati vengono registrati in pkg_facts.
+`docker_packages_inst_ubuntu`: Una lista di pacchetti Docker da installare su distribuzioni basate su Debian. Se viene specificata una versione per un pacchetto (ad esempio, docker-ce=5:24.0.6-1~ubuntu.22.04~jammy), verrà installata quella versione. Altrimenti, verrà installata l’ultima versione disponibile.
 
-4)Il task successivo stampa a video la lista dei pacchetti Docker installati, filtrando il risultato di pkg_facts.
+## Esempio di Playbook
 
-5)Infine il servizio Docker viene avviato e abilitato all'avvio tramite il modulo service.
+Ecco 2 esempi di come utilizzare il  ruolo:
 
-Il ruolo gestisce quindi il ciclo di vita completo di installazione e configurazione iniziale di Docker.
+```yaml
+- hosts: servers
+  roles:
+   - role: docker_install
+```
 
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-       - role: docker_install
-
-    - name: includi role per installazione di docker
-      include_role: 
-        name: docker_install
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- name: includi role per installazione di docker
+  include_role: 
+    name: docker_install
+```

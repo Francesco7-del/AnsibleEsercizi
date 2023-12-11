@@ -1,0 +1,27 @@
+
+
+ # Rimozione pacchetti per installazione pulita
+- name: Remove old Docker packages
+  ansible.builtin.package:
+    name: "{{ docker_packages_dis_centos }}"
+    state: absent
+
+# Aggiunta repo per sistemi RH
+- name: Add Docker repository for RedHat
+  ansible.builtin.yum_repository:
+    file: "{{ repo_file_rh_family }}"
+    name: "{{ repo_name_rh_family }}"
+    description: "{{ repo_desc_rh_family }}"
+    baseurl: "{{ repo_baseurl_rh_family }}"
+    gpgcheck: true
+    gpgkey: "{{ repo_gpk_rh_family }}"
+    state: present
+
+# Installa pacchetti necessari
+- name: install/Upgrade Docker packages
+  ansible.builtin.package:
+    name: "{{ docker_packages_inst_rh }}"
+    state: latest
+    enablerepo: "{{ repo_name_rh_family }}"
+    allow_downgrade: "{{ docker_allow_downgrade }}"
+
