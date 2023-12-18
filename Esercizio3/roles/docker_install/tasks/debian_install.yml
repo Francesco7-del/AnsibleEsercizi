@@ -6,13 +6,13 @@
     state: present
 
 # Installa pacchetti necessari
-- name: Installa/Aggiorna i pacchetti Docker
+- name: Install/Upgrade Docker packages
   apt:
     name: "{{ item }}"
     state: latest
     allow_downgrade: "{{ docker_allow_downgrade }}"
-  loop: "{{ docker_packages_inst_ubuntu }}"
-
+  loop: "{{ docker_packages_install }}"
+  notify: Restart Docker service
 
 
 

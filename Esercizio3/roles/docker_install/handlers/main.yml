@@ -1,6 +1,7 @@
 ---
 # handlers file for docker_install
-  - name: restart docker
-    service: 
-      name: docker 
-      state: restarted
+
+- name: Restart Docker service
+  service:
+    name: "{{ docker_service }}"
+    state: restarted

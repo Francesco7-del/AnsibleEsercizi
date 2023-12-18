@@ -1,0 +1,7 @@
+---
+# handlers file for apache_install
+
+- name: Riavvia Apache
+  service:
+    name: "{{ service_apache }}"
+    state: restarted

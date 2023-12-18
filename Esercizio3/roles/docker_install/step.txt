@@ -1,13 +1,37 @@
-1. Raccogliere i facts del sistema e impostare le variabili
- 
-2.disinstallare dipendenze per inistallazione pulita(per distro Redhat)
+
+- Controllo esistenza cartella /var/lib/docker
+    
+
+esiste:
+- stop docker
+- rinominare cartella  /var/lib/docker in  /var/lib/docker_old   
+
+sempre:
+- creazione cartella /var/lib/docker
+- Crea un filesystem(opzionale).
+- Montare il disco in  /var/lib/docker
+
+esiste:
+- Copiare i dati da /var/lib/docker_old sul nuovo disco montato in /var/lib/docker
 
 
-3. Costruire la stringa del repository Docker basata sulla distribuzione
-  
-   
-3. Aggiungere il repository Docker ufficiale
 
-5.installa docker
 
-6.avvia servizio docker
+-----
+
+- Installare Apache/
+
+- Configurare Apache?
+
+
+- Scaricare la blacklist
+
+- Check 
+  - blacklist change
+  -  upgrade blacklist
+
+- Creare una pagina web personalizzata con messaggio benventuo e link della blacklist
+
+- Configurare Apache per utilizzare la blacklist(negare IP presenti nel file scaricato?)
+
+- Riavvia Apache(handlers)

@@ -1,0 +1,6 @@
+---
+# defaults file for apache_install
+
+service_apache: apache2
+#nome_pacchetto
+configuration_path: /etc/apache2/conf-enabled/  

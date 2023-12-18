@@ -1,0 +1,41 @@
+#task for install apache2
+
+- name: Installa Apache
+  package:
+    name: apache2
+    state: present
+
+- name: Scarica la blacklist
+  get_url:
+    url: https://myip.ms/files/blacklist/general/latest_blacklist.txt
+    dest: /var/www/html/latest_blacklist.txt
+  register: blacklist
+
+- debug:
+    msg: 
+      - " blacklist ---"
+      - " {{ blacklist }}"
+
+- when: blacklist.changed
+  name: Delete old blacklist
+  file: 
+    path: "{{ configuration_path }}/10-blacklist.conf"
+    state: absent
+
+
+- when: blacklist.changed or true
+  name: Parsing della blacklist e aggiunta alla configurazione di Apache
+  lineinfile:
+    create: true
+    path: "{{ configuration_path }}/10-blacklist.conf"
+    line: "Deny from {{ item }}"
+  loop: "{{ lookup('file', '/var/www/html/latest_blacklist.txt').split('\n') }}"
+  notify: Riavvia Apache
+
+- name: Crea una pagina web personalizzata con un link alla blacklist
+  copy:
+    dest: /var/www/html/index.html
+    content: |
+      <h1>Benvenuto!</h1>
+      <p><a href="/latest_blacklist.txt">Clicca qui per vedere la blacklist</a></p>
+  

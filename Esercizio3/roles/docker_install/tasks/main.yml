@@ -1,33 +1,19 @@
 ---
 # task file main
 
-# Install for RH 
+- name: Montaggio disco in/var/lib/docker
+  include_tasks: add_docker_disk.yml
+  when: ('/var/lib/docker' not in ansible_mounts | map(attribute='mount')) | bool
+
 - name: install for RH
   include_tasks: redhat_install.yml
   when: (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] >= "38") or (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] >= "7")
 
-# Install debian 
 - name: install for debian
   include_tasks: debian_install.yml
   when: (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version']  >= "20")
 
-
-# Avvio svc docker
 - name: Start Docker service
   service:
     name: "{{ docker_service }}"
-    state: started
-  ignore_errors: true
-
-# Debug
-- name: Get package facts for Docker-ce
-  package_facts:
-    manager: auto
-  register: pkg_facts
-
-- name: Print Docker-ce package facts
-  debug:
-    var: pkg_facts.ansible_facts.packages[item]
-  loop:
-    - 'docker-ce'
-    - "{{ pkg_facts.ansible_facts.packages.keys() | select('match', 'docker-ce-*') | list }}"
+    state: started 

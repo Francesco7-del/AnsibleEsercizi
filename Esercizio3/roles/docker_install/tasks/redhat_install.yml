@@ -3,7 +3,7 @@
  # Rimozione pacchetti per installazione pulita
 - name: Remove old Docker packages
   ansible.builtin.package:
-    name: "{{ docker_packages_dis_centos }}"
+    name: "{{ docker_packages_remove_rh }}"
     state: absent
 
 # Aggiunta repo per sistemi RH
@@ -18,10 +18,11 @@
     state: present
 
 # Installa pacchetti necessari
-- name: install/Upgrade Docker packages
+- name: Install/Upgrade Docker packages
   ansible.builtin.package:
-    name: "{{ docker_packages_inst_rh }}"
+    name: "{{ docker_packages_install }}"
     state: latest
     enablerepo: "{{ repo_name_rh_family }}"
     allow_downgrade: "{{ docker_allow_downgrade }}"
+  notify: Restart Docker service
 

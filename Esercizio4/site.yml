@@ -1,0 +1,11 @@
+- name: Installazione Apache
+  hosts: host_locale
+  connection: local
+  become: true
+  become_method: sudo
+  become_user: root
+  gather_facts: true
+  tasks:      
+    - name: includi role per installazione di Apache
+      include_role: 
+        name: apache_install

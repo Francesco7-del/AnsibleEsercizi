@@ -1,0 +1,45 @@
+# docker_disk_setup.yml
+
+- name: Check existence of /var/lib/docker directory
+  stat:
+    path: /var/lib/docker
+  register: docker_folder
+
+- when: docker_folder.stat.exists 
+  block:
+    - name: Stop Docker service
+      service:
+        name: docker
+        state: stopped
+
+    - name: Get current date and time
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y-%m-%d-%H%M%S') }}"
+
+    - name: Rename /var/lib/docker to /var/lib/docker_old
+      command: mv /var/lib/docker /var/lib/docker_old_{{ current_date }}
+
+- name: Create /var/lib/docker directory
+  file:
+    path: /var/lib/docker
+    state: directory
+    mode: '0710'
+# Todo: Creazione filesystem (se necessario)
+
+- name: Mount the disk
+  mount:
+    path: /var/lib/docker/
+    src: "{{ disk_device }}"
+    fstype: ext4
+    state: mounted
+
+- name: Copy data from /var/lib/docker_old_{{ current_date }} to the new disk
+  copy:
+    src: "/var/lib/docker_old_{{ current_date }}"
+    dest: "/var/lib/docker/"
+    remote_src: true
+
+- debug:
+    msg: 
+      - " data ---{{ current_date }}"
+      

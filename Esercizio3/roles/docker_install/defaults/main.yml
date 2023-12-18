@@ -13,7 +13,7 @@ repo_desc_rh_family: Docker CE Stable - $basearch
 repo_gpk_rh_family: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
 
 # Pacchetti da rimuovere per installazione pulita
-docker_packages_dis_centos:
+docker_packages_remove_rh:
   - docker
   - docker-client
   - docker-client-latest
@@ -22,24 +22,21 @@ docker_packages_dis_centos:
   - docker-latest-logrotate
   - docker-logrotate
   - docker-engine
+  - docker-selinux
+  - docker-engine-selinux
 
-# Pacchetti da installare 
-docker_packages_inst_rh:
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
-  - docker-compose-plugin
-  - docker-buildx-plugin
-  
 docker_allow_downgrade: true
 
 # Repo Debian family vars
 repo_baseurl_debian_family: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }}   {{ ansible_distribution_release }}  stable 
 
 # Pacchetti da installare 
-docker_packages_inst_ubuntu:
+docker_packages_install:
   - docker-ce
   - docker-ce-cli
   - containerd.io
   - docker-compose-plugin
   - docker-buildx-plugin
+
+# Disco da utilizzare per montare cartella var/lib
+disk_device: /dev/sdc #dev/sda2
