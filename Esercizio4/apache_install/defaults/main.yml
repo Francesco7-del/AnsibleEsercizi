@@ -1,8 +1,19 @@
 ---
 # defaults file for apache_install
+pkg_name: "{{ os_pkg_name[ansible_facts.distribution | lower] }}"
+os_pkg_name:
+  fedora: httpd
+  centos: httpd
+  redhat: httpd
+  debian: apache2
 
-service_apache: apache2
-#nome_pacchetto
-pkg_name_rh: httpd
-pkg_name_debian: apache2
-configuration_path: /etc/apache2/conf-enabled/  
+blacklist_url: https://myip.ms/files/blacklist/general/latest_blacklist.txt
+
+service_apache: "{{ pkg_name }}"
+
+configuration_path:
+configuration_file_path: "{{ configuration_path }}/10-blacklist.conf"
+
+html_directory: /var/www/html/
+html_file: "{{ html_directory }}/index.html"
+html_content: <h1>Benvenuto!</h1>

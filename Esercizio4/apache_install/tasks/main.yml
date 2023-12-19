@@ -1,7 +1,23 @@
----
-# tasks file for apache_install
+#task for install apache2
 
-- name: install Apache
-  include_tasks: apache_install.yml
+- name: Install Apache
+  package:
+    name: "{{ pkg_name }}"
+    state: present
 
-  
+- name: Scarica la blacklist
+  uri:
+    url: "{{ blacklist_url }}"
+    return_content: true
+  register: blacklist
+
+- name: Parsing della blacklist e aggiunta alla configurazione di Apache
+  template:
+    src: denylist.j2
+    dest: "{{ configuration_file_path }}"
+  notify: Riavvia Apache
+
+- name: Crea una pagina web personalizzata con un link alla blacklist
+  copy:
+    dest: "{{ html_file }}"
+    content: "{{ html_content }}"

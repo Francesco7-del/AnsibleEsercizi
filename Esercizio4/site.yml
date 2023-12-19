@@ -9,3 +9,5 @@
     - name: includi role per installazione di Apache
       include_role: 
         name: apache_install
+      vars:
+        configuration_path: /etc/httpd/conf.d
