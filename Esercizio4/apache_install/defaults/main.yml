@@ -3,4 +3,6 @@
 
 service_apache: apache2
 #nome_pacchetto
+pkg_name_rh: httpd
+pkg_name_debian: apache2
 configuration_path: /etc/apache2/conf-enabled/  

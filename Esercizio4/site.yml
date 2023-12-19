@@ -1,5 +1,5 @@
 - name: Installazione Apache
-  hosts: host_locale
+  hosts: localhost
   connection: local
   become: true
   become_method: sudo
