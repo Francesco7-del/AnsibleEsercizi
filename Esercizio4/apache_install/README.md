@@ -1,38 +1,55 @@
-Role Name
-=========
 
-A brief description of the role goes here.
+# Ruolo Ansible per l'installazione di Apache
+Questo ruolo Ansible gestisce l'installazione e la configurazione di Apache su una macchina target. Supporta sia le distribuzioni basate su Debian che quelle basate su RedHat (Fedora/Centos).
 
-Requirements
-------------
+## Requisiti
+- Disporre dell'escalation ai privilegi di root per accedere alle macchine target.
+- Abilitare la raccolta dei facts in Ansible (gather_facts: true).
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Variabili
+Il ruolo utilizza le seguenti variabili:
 
-Role Variables
---------------
+`pkg_name`: Il nome del pacchetto Apache da installare (impostato di default su httpd per Fedora/Centos/RedHat e apache2 per Debian).
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+`blacklist_url`: L'URL da cui scaricare la blacklist.
 
-Dependencies
-------------
+`service_apache`: Il nome del servizio systemd per Apache (impostato di default su pkg_name).
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+`configuration_path`: Il percorso della configurazione di Apache.
 
-Example Playbook
-----------------
+`configuration_file_path`: Il percorso del file di configurazione di Apache.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+`html_directory`: La directory in cui creare la pagina web personalizzata.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+`html_file`: Il percorso del file HTML da creare.
 
-License
--------
+`html_content`: Il contenuto HTML da inserire nella pagina web personalizzata.
 
-BSD
+## Funzionalità ruolo
+  Questo ruolo Ansible esegue le seguenti operazioni:
+  1. Installa il pacchetto Apache (`httpd` o `apache2` a seconda della distribuzione del sistema operativo).
+  2. Scarica una blacklist da un URL specificato.
+  3. Esegue il parsing della blacklist e la aggiunge alla configurazione di Apache.
+  4. Crea una pagina web personalizzata.
 
-Author Information
-------------------
+## Test eseguti
+- Test fatti con OS Ubuntu e Fedora
+- Installazione pulita dove Apache non presente,test con Apache presente sulla macchina target--> esito positivo
+- Test effettuato IP, con presenza non fa visualizza la Pagina di 'Benvenuto', con assenza di IP nella blacklist visualizza la Pagina di 'Benvenuto--> esito positivo
+- Test con blacklist in stato: aggiornato,non aggiornato -->esito positivo
+- Test aggiornamento,creazione pagina di 'Benvenuto'--> esito positivo
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Esempio di Playbook
+Ecco un esempio di come utilizzare il ruolo:
+
+```yaml
+- hosts: servers
+  roles:
+   - role: apache_install
+```
+
+```yaml
+- name: includi ruolo per installazione di Apache
+  include_role:
+    name: apache_install
+```

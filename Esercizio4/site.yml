@@ -1,13 +1,13 @@
 - name: Installazione Apache
-  hosts: localhost
+  hosts: vm1
   connection: local
   become: true
   become_method: sudo
   become_user: root
   gather_facts: true
-  tasks:      
+  tasks:
     - name: includi role per installazione di Apache
-      include_role: 
+      include_role:
         name: apache_install
       vars:
-        configuration_path: /etc/httpd/conf.d
+        configuration_path: /etc/apache2/conf-enabled/   #/etc/httpd/conf.d path per sistemi fedora/centos

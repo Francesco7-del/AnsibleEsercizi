@@ -2,8 +2,6 @@
 
 Questo ruolo Ansible gestisce l'installazione e l'aggiornamento di Docker su una macchina target. Supporta sia le distribuzioni basate su Debian che quelle basate su RedHat(Fedora/Centos).
 
-
-
 ## Requisiti
 - Disporre dell'escalation ai privilegi di root per accedere alle macchine target 
 - Abilitare raccolta facts in Ansible (gather_facts: true)

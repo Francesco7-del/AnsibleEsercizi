@@ -1,11 +1,13 @@
 ---
 # defaults file for apache_install
+
 pkg_name: "{{ os_pkg_name[ansible_facts.distribution | lower] }}"
 os_pkg_name:
   fedora: httpd
   centos: httpd
   redhat: httpd
   debian: apache2
+  ubuntu: apache2
 
 blacklist_url: https://myip.ms/files/blacklist/general/latest_blacklist.txt
 
