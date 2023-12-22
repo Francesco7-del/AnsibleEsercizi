@@ -1,9 +1,9 @@
-<Directory /var/www/html>
+<Directory {{ html_directory }}>
     <RequireAll>
         Require all granted
         {% for ip in blacklist.content.splitlines() %}
             {% if ip | regex_search("^([^#\\n][^\\t]+)") %}
-        Require not ip {{ (ip | split())[0] }}
+        Require not ip {{ ip }}
             {% endif %}
         {% endfor %}
     </RequireAll>

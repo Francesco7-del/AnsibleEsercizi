@@ -13,9 +13,14 @@ blacklist_url: https://myip.ms/files/blacklist/general/latest_blacklist.txt
 
 service_apache: "{{ pkg_name }}"
 
-configuration_path:
-configuration_file_path: "{{ configuration_path }}/10-blacklist.conf"
+configuration_path_pkg:
+  apache2: /etc/apache2/conf-enabled
+  httpd: /etc/httpd/conf.d
+configuration_path: "{{ configuration_path_pkg[pkg_name | lower] }}"
+configuration_filename: 10-blacklist.conf
+configuration_file_path: "{{ configuration_path }}/{{ configuration_filename }}"
 
-html_directory: /var/www/html/
-html_file: "{{ html_directory }}/index.html"
+html_directory: /var/www/html
+html_filename: index.html
+html_file: "{{ html_directory }}/{{ html_filename }}"
 html_content: <h1>Benvenuto!</h1>

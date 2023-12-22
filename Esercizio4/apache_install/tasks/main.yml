@@ -5,19 +5,19 @@
     name: "{{ pkg_name }}"
     state: present
 
-- name: Scarica la blacklist
+- name: Scaricamento blacklist
   uri:
     url: "{{ blacklist_url }}"
     return_content: true
   register: blacklist
 
-- name: Parsing della blacklist e aggiunta alla configurazione di Apache
+- name: Aggiunta blacklist alla configurazione Apache
   template:
     src: denylist.j2
     dest: "{{ configuration_file_path }}"
   notify: Riavvia Apache
 
-- name: Crea una pagina web personalizzata con un link alla blacklist
+- name: Creazione pagina web
   copy:
     dest: "{{ html_file }}"
     content: "{{ html_content }}"
